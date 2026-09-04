@@ -2,6 +2,12 @@
 // Internally and in stored data we always use the currency codes
 // USD / ILS / GBP / EURO exactly. These helpers are for display only.
 
+import {
+  DEFAULT_EXCHANGE_RATES,
+  EXCHANGE_RATES_STORAGE_KEY,
+  SUPPORTED_CURRENCIES,
+} from '@/utils/constants'
+
 const CURRENCY_SYMBOLS = {
   USD: '$',
   ILS: '₪',
@@ -36,7 +42,7 @@ export function formatCurrency(amount, currencyCode = 'USD') {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount)
-  } catch (e) {
+  } catch {
     // Fallback in case Intl doesn't recognize the currency code.
     return `${getCurrencySymbol(currencyCode)}${Number(amount).toFixed(2)}`
   }
@@ -50,3 +56,29 @@ export function formatNumber(amount) {
   }).format(amount)
 }
 
+export function getCachedExchangeRatesForDisplay() {
+  try {
+    const raw = window.localStorage.getItem(EXCHANGE_RATES_STORAGE_KEY)
+    if (!raw) return DEFAULT_EXCHANGE_RATES
+
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object') return DEFAULT_EXCHANGE_RATES
+
+    return SUPPORTED_CURRENCIES.reduce((rates, currency) => {
+      const value = parsed[currency]
+      rates[currency] =
+        typeof value === 'number' && isFinite(value) && value > 0
+          ? value
+          : DEFAULT_EXCHANGE_RATES[currency]
+      return rates
+    }, {})
+  } catch {
+    return DEFAULT_EXCHANGE_RATES
+  }
+}
+
+export function convertCurrency(amount, fromCurrency, toCurrency) {
+  const rates = getCachedExchangeRatesForDisplay()
+  const amountInUSD = amount / rates[fromCurrency]
+  return Math.round((amountInUSD * rates[toCurrency] + Number.EPSILON) * 100) / 100
+}

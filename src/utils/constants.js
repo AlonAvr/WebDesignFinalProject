@@ -45,6 +45,11 @@ export const MONTH_OPTIONS = MONTH_NAMES.map((label, index) => ({
   label,
 }))
 
+export const YEAR_OPTIONS = Array.from(
+  { length: 11 },
+  (_, index) => new Date().getFullYear() - index
+)
+
 // The name of the "database" used across the app (localStorage namespace).
 export const DATABASE_NAME = 'costsdb'
 export const DATABASE_VERSION = 1

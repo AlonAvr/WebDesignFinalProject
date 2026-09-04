@@ -21,10 +21,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { openCostsDB } from '@/services/db'
-import { formatCurrency } from '@/utils/currency'
+import { convertCurrency, formatCurrency } from '@/utils/currency'
 import {
   SUPPORTED_CURRENCIES,
   MONTH_OPTIONS,
+  YEAR_OPTIONS,
   DATABASE_NAME,
   DATABASE_VERSION,
 } from '@/utils/constants'
@@ -32,8 +33,6 @@ import {
 const now = new Date()
 const CURRENT_YEAR = now.getFullYear()
 const CURRENT_MONTH = now.getMonth() + 1
-// Offer the current year plus a few previous ones for the filter dropdown.
-const YEAR_OPTIONS = [CURRENT_YEAR, CURRENT_YEAR - 1, CURRENT_YEAR - 2, CURRENT_YEAR - 3]
 
 // "Monthly Report" page: lets the user pick month/year/currency, then
 // renders a summary and a detailed table calculated from the real report.
@@ -55,7 +54,7 @@ export function MonthlyReport() {
   const stats = useMemo(() => {
     const { costs, total } = report
     const largestConverted = costs.reduce((max, item) => {
-      const converted = convertForDisplay(item, total.currency)
+      const converted = convertCurrency(item.sum, item.currency, total.currency)
       return converted > max ? converted : max
     }, 0)
     return {
@@ -191,7 +190,7 @@ export function MonthlyReport() {
                     <TableCell>{cost.currency}</TableCell>
                     <TableCell className="text-right font-medium">
                       {formatCurrency(
-                        convertForDisplay(cost, report.total.currency),
+                        convertCurrency(cost.sum, cost.currency, report.total.currency),
                         report.total.currency
                       )}
                     </TableCell>
@@ -204,26 +203,5 @@ export function MonthlyReport() {
       </Card>
     </PageContainer>
   )
-}
-
-// Recomputes a single cost's converted value for display in the table.
-// This mirrors db.js's internal conversion so the table's per-row value
-// matches the report total without ever mutating the original stored cost.
-function convertForDisplay(cost, targetCurrency) {
-  if (cost.currency === targetCurrency) return cost.sum
-  const rates = readRatesForDisplay()
-  const amountInUsd = cost.sum / rates[cost.currency]
-  return Math.round((amountInUsd * rates[targetCurrency] + Number.EPSILON) * 100) / 100
-}
-
-function readRatesForDisplay() {
-  try {
-    const raw = window.localStorage.getItem('costManagerExchangeRates')
-    if (!raw) return { USD: 1, GBP: 0.6, EURO: 0.7, ILS: 3.4 }
-    const parsed = JSON.parse(raw)
-    return parsed && typeof parsed === 'object' ? parsed : { USD: 1, GBP: 0.6, EURO: 0.7, ILS: 3.4 }
-  } catch (e) {
-    return { USD: 1, GBP: 0.6, EURO: 0.7, ILS: 3.4 }
-  }
 }
 

@@ -13,10 +13,11 @@ import {
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { openCostsDB } from '@/services/db'
-import { formatCurrency } from '@/utils/currency'
+import { convertCurrency, formatCurrency } from '@/utils/currency'
 import {
   SUPPORTED_CURRENCIES,
   MONTH_OPTIONS,
+  YEAR_OPTIONS,
   DATABASE_NAME,
   DATABASE_VERSION,
 } from '@/utils/constants'
@@ -24,7 +25,6 @@ import {
 const now = new Date()
 const CURRENT_YEAR = now.getFullYear()
 const CURRENT_MONTH = now.getMonth() + 1
-const YEAR_OPTIONS = [CURRENT_YEAR, CURRENT_YEAR - 1, CURRENT_YEAR - 2, CURRENT_YEAR - 3]
 
 // Restrained, cohesive categorical palette (reused in the same order every
 // render so colors never appear random between renders or reloads).
@@ -62,7 +62,7 @@ export function PieChartView() {
   const categoryData = useMemo(() => {
     const totalsByCategory = new Map()
     for (const cost of report.costs) {
-      const converted = convertToCurrency(cost.sum, cost.currency, report.total.currency)
+      const converted = convertCurrency(cost.sum, cost.currency, report.total.currency)
       totalsByCategory.set(cost.category, (totalsByCategory.get(cost.category) || 0) + converted)
     }
     return Array.from(totalsByCategory.entries())
@@ -174,7 +174,7 @@ export function PieChartView() {
                       nameKey="category"
                       cx="50%"
                       cy="50%"
-                      innerRadius={60}
+                      innerRadius={0}
                       outerRadius={110}
                       paddingAngle={2}
                       isAnimationActive
@@ -227,25 +227,5 @@ export function PieChartView() {
       </Card>
     </PageContainer>
   )
-}
-
-// Converts an amount between currencies using the cached exchange rates,
-// matching the same USD-pivot formula used by db.js.
-function convertToCurrency(amount, fromCurrency, toCurrency) {
-  if (fromCurrency === toCurrency) return amount
-  const rates = readRatesForDisplay()
-  const amountInUsd = amount / rates[fromCurrency]
-  return amountInUsd * rates[toCurrency]
-}
-
-function readRatesForDisplay() {
-  try {
-    const raw = window.localStorage.getItem('costManagerExchangeRates')
-    if (!raw) return { USD: 1, GBP: 0.6, EURO: 0.7, ILS: 3.4 }
-    const parsed = JSON.parse(raw)
-    return parsed && typeof parsed === 'object' ? parsed : { USD: 1, GBP: 0.6, EURO: 0.7, ILS: 3.4 }
-  } catch (e) {
-    return { USD: 1, GBP: 0.6, EURO: 0.7, ILS: 3.4 }
-  }
 }
 

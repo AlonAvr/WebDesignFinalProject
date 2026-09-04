@@ -9,7 +9,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts'
-import { BarChart3, FileSearch, TrendingUp, Wallet, CalendarDays } from 'lucide-react'
+import { FileSearch, TrendingUp, Wallet, CalendarDays } from 'lucide-react'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { StatCard } from '@/components/dashboard/StatCard'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -27,13 +27,13 @@ import { formatCurrency, formatNumber } from '@/utils/currency'
 import {
   SUPPORTED_CURRENCIES,
   MONTH_NAMES,
+  YEAR_OPTIONS,
   DATABASE_NAME,
   DATABASE_VERSION,
 } from '@/utils/constants'
 
 const now = new Date()
 const CURRENT_YEAR = now.getFullYear()
-const YEAR_OPTIONS = [CURRENT_YEAR, CURRENT_YEAR - 1, CURRENT_YEAR - 2, CURRENT_YEAR - 3]
 
 const BAR_COLOR = '#1d4ed8' // single restrained accent color, no rainbow bars
 
@@ -149,43 +149,40 @@ export function BarChartView() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {stats.yearlyTotal === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border py-16 text-center text-muted-foreground">
-              <BarChart3 className="h-8 w-8" strokeWidth={1.5} />
-              <p className="text-sm font-medium">No expenses recorded for {appliedFilters.year}.</p>
-              <p className="text-xs">Add a cost to see the yearly breakdown.</p>
-            </div>
-          ) : (
-            <div className="h-80 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyTotals} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
-                  <XAxis
-                    dataKey="month"
-                    tickLine={false}
-                    axisLine={false}
-                    className="text-xs fill-muted-foreground"
-                  />
-                  <YAxis
-                    tickLine={false}
-                    axisLine={false}
-                    className="text-xs fill-muted-foreground"
-                    tickFormatter={(value) => formatNumber(value)}
-                    width={56}
-                  />
-                  <Tooltip
-                    formatter={(value) => formatCurrency(value, appliedFilters.currency)}
-                    cursor={{ fill: 'hsl(var(--muted))' }}
-                  />
-                  <Bar dataKey="total" radius={[4, 4, 0, 0]} isAnimationActive animationDuration={400}>
-                    {monthlyTotals.map((entry) => (
-                      <Cell key={entry.month} fill={BAR_COLOR} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+          {stats.yearlyTotal === 0 && (
+            <p className="mb-3 text-sm text-muted-foreground">
+              No expenses recorded for this year.
+            </p>
           )}
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={monthlyTotals} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  axisLine={false}
+                  className="text-xs fill-muted-foreground"
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  className="text-xs fill-muted-foreground"
+                  tickFormatter={(value) => formatNumber(value)}
+                  width={56}
+                />
+                <Tooltip
+                  formatter={(value) => formatCurrency(value, appliedFilters.currency)}
+                  cursor={{ fill: 'hsl(var(--muted))' }}
+                />
+                <Bar dataKey="total" radius={[4, 4, 0, 0]} isAnimationActive animationDuration={400}>
+                  {monthlyTotals.map((entry) => (
+                    <Cell key={entry.month} fill={BAR_COLOR} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
           {/* Text-based summary as an accessible alternative to the chart. */}
           <table className="sr-only">
@@ -210,4 +207,3 @@ export function BarChartView() {
     </PageContainer>
   )
 }
-

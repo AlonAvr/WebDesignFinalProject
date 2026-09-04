@@ -29,7 +29,7 @@ import {
 
 const INITIAL_FORM = {
   sum: '',
-  currency: '',
+  currency: 'USD',
   category: '',
   description: '',
 }
@@ -234,4 +234,3 @@ export function AddCostForm() {
     </PageContainer>
   )
 }
-

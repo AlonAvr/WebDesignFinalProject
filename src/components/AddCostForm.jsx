@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { PlusCircle, CheckCircle2 } from 'lucide-react'
+import { PlusCircle, CheckCircle2, Sparkles } from 'lucide-react'
 import { PageContainer } from '@/components/layout/PageContainer'
 import {
   Card,
@@ -100,16 +100,19 @@ export function AddCostForm() {
       title="Add Cost"
       description="Record a new expense with its amount, currency, and category."
     >
-      <Card className="max-w-xl">
-        <CardHeader>
-          <CardTitle>New Cost Entry</CardTitle>
+      <Card className="max-w-2xl overflow-hidden">
+        <CardHeader className="border-b border-border/70 bg-secondary/30 pb-5">
+          <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
+            <Sparkles className="h-5 w-5 text-accent" />
+          </div>
+          <CardTitle className="text-lg">New Cost Entry</CardTitle>
           <CardDescription>
             The date is recorded automatically when you save an expense.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="cost-sum">Amount</Label>
                 <Input
@@ -203,7 +206,7 @@ export function AddCostForm() {
               )}
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="mt-2 h-11 w-full">
               <PlusCircle className="h-4 w-4" />
               Add Cost
             </Button>
@@ -217,6 +220,7 @@ export function AddCostForm() {
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.2 }}
                   role="status"
+                  aria-live="polite"
                   className={
                     feedback.type === 'success'
                       ? 'flex items-center gap-2 rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm font-medium text-success'

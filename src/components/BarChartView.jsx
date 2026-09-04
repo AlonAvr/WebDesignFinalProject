@@ -35,7 +35,20 @@ import {
 const now = new Date()
 const CURRENT_YEAR = now.getFullYear()
 
-const BAR_COLOR = '#1d4ed8' // single restrained accent color, no rainbow bars
+const BAR_COLOR = '#2f6fed'
+
+function ChartTooltip({ active, payload, label, currency }) {
+  if (!active || !payload?.length) return null
+
+  return (
+    <div className="rounded-lg border border-border/80 bg-card px-3 py-2 shadow-lg">
+      <p className="text-xs font-semibold text-foreground">{label}</p>
+      <p className="mt-1 text-sm font-medium text-accent">
+        {formatCurrency(payload[0].value, currency)}
+      </p>
+    </div>
+  )
+}
 
 // "Year Overview" page: shows all 12 months for the selected year,
 // converting each month's total into the selected currency. Months with
@@ -77,6 +90,13 @@ export function BarChartView() {
       description="Compare total spending across all months of a selected year."
     >
       <Card className="mb-6">
+        <CardHeader className="flex-row items-center justify-between border-b border-border/70 bg-secondary/30">
+          <div>
+            <CardTitle className="text-base">Chart filters</CardTitle>
+            <p className="mt-1 text-xs text-muted-foreground">Compare monthly totals in one currency.</p>
+          </div>
+          <span className="hidden text-xs font-medium text-muted-foreground sm:block">12 month view</span>
+        </CardHeader>
         <CardContent className="flex flex-wrap items-end gap-4 pt-6">
           <div className="space-y-1.5">
             <Label htmlFor="bar-year">Year</Label>
@@ -142,7 +162,7 @@ export function BarChartView() {
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="border-b border-border/70">
           <CardTitle className="text-base">Monthly Totals</CardTitle>
           <CardDescription>
             {appliedFilters.year} &middot; converted to {appliedFilters.currency}
@@ -150,32 +170,33 @@ export function BarChartView() {
         </CardHeader>
         <CardContent>
           {stats.yearlyTotal === 0 && (
-            <p className="mb-3 text-sm text-muted-foreground">
-              No expenses recorded for this year.
-            </p>
+            <div className="mb-4 flex items-center gap-3 rounded-lg border border-dashed border-border bg-secondary/25 px-4 py-3 text-sm text-muted-foreground">
+              <CalendarDays className="h-4 w-4 shrink-0 text-accent" />
+              No expenses recorded for this year yet.
+            </div>
           )}
-          <div className="h-80 w-full">
+          <div className="h-80 w-full" role="img" aria-label={`Monthly spending totals for ${appliedFilters.year}`}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyTotals} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border" />
+                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="hsl(var(--border))" />
                 <XAxis
                   dataKey="month"
                   tickLine={false}
                   axisLine={false}
-                  className="text-xs fill-muted-foreground"
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                 />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
-                  className="text-xs fill-muted-foreground"
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
                   tickFormatter={(value) => formatNumber(value)}
                   width={56}
                 />
                 <Tooltip
-                  formatter={(value) => formatCurrency(value, appliedFilters.currency)}
-                  cursor={{ fill: 'hsl(var(--muted))' }}
+                  content={<ChartTooltip currency={appliedFilters.currency} />}
+                  cursor={{ fill: 'hsl(var(--muted) / 0.7)' }}
                 />
-                <Bar dataKey="total" radius={[4, 4, 0, 0]} isAnimationActive animationDuration={400}>
+                <Bar dataKey="total" radius={[6, 6, 2, 2]} isAnimationActive animationDuration={350} barSize={28}>
                   {monthlyTotals.map((entry) => (
                     <Cell key={entry.month} fill={BAR_COLOR} />
                   ))}

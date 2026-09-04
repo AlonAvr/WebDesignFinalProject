@@ -20,23 +20,29 @@ const NAV_LINKS = [
   { id: NAV_ITEMS.SETTINGS, label: 'Settings', icon: SettingsIcon },
 ]
 
-// Persistent dark sidebar. Stays visually stable across all pages while
-// the active section is highlighted with a subtle accent indicator.
 export function AppSidebar({ activeSection, onNavigate }) {
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
-      <div className="flex items-center gap-2 px-6 py-6">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-sidebar-active/20">
-          <Wallet className="h-4 w-4 text-sidebar-active" strokeWidth={2.25} />
+    <aside className="flex h-screen w-[15.5rem] shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
+      <div className="flex items-center gap-3 px-5 py-6">
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sidebar-active/15 ring-1 ring-sidebar-active/25">
+          <Wallet className="h-[1.1rem] w-[1.1rem] text-sidebar-active" strokeWidth={2.25} />
         </div>
-        <span className="text-lg font-semibold tracking-tight text-white">
+        <div>
+          <span className="block text-[1.05rem] font-semibold tracking-tight text-white">
           {APP_NAME}
-        </span>
+          </span>
+          <span className="mt-0.5 block text-[0.68rem] font-medium uppercase tracking-[0.16em] text-sidebar-muted">
+            Cost manager
+          </span>
+        </div>
       </div>
 
       <Separator />
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav aria-label="Primary navigation" className="flex-1 space-y-1 px-3 py-5">
+        <p className="mb-3 px-3 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-sidebar-muted/80">
+          Workspace
+        </p>
         {NAV_LINKS.map((item) => {
           const isActive = item.id === activeSection
           const Icon = item.icon
@@ -45,10 +51,11 @@ export function AppSidebar({ activeSection, onNavigate }) {
               key={item.id}
               type="button"
               onClick={() => onNavigate(item.id)}
+              aria-current={isActive ? 'page' : undefined}
               className={cn(
-                'relative flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors duration-150',
+                'relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150',
                 isActive
-                  ? 'bg-white/5 text-white'
+                  ? 'bg-sidebar-active/15 text-white'
                   : 'text-sidebar-muted hover:bg-white/5 hover:text-white'
               )}
             >
@@ -66,9 +73,9 @@ export function AppSidebar({ activeSection, onNavigate }) {
         })}
       </nav>
 
-      <div className="px-6 py-4">
-        <p className="text-xs text-sidebar-muted">
-          Cost Manager &middot; Final Project
+      <div className="mx-3 mb-4 rounded-lg border border-sidebar-border/80 bg-white/[0.03] px-3 py-3">
+        <p className="text-[0.68rem] leading-relaxed text-sidebar-muted">
+          Keep every expense in view.
         </p>
       </div>
     </aside>

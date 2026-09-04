@@ -39,6 +39,20 @@ const CATEGORY_COLORS = [
   '#78716c', // stone (for "Other")
 ]
 
+function ChartTooltip({ active, payload, currency }) {
+  if (!active || !payload?.length) return null
+
+  const item = payload[0]
+  return (
+    <div className="rounded-lg border border-border/80 bg-card px-3 py-2 shadow-lg">
+      <p className="text-xs font-semibold text-foreground">{item.name}</p>
+      <p className="mt-1 text-sm font-medium text-accent">
+        {formatCurrency(item.value, currency)}
+      </p>
+    </div>
+  )
+}
+
 // "Categories" page: aggregates costs by category for the selected
 // month/year, converting every cost into the selected currency first.
 export function PieChartView() {
@@ -83,6 +97,13 @@ export function PieChartView() {
       description="See how your spending is distributed across categories for a selected month."
     >
       <Card className="mb-6">
+        <CardHeader className="flex-row items-center justify-between border-b border-border/70 bg-secondary/30">
+          <div>
+            <CardTitle className="text-base">Chart filters</CardTitle>
+            <p className="mt-1 text-xs text-muted-foreground">See the category mix for a selected period.</p>
+          </div>
+          <span className="hidden text-xs font-medium text-muted-foreground sm:block">Category mix</span>
+        </CardHeader>
         <CardContent className="flex flex-wrap items-end gap-4 pt-6">
           <div className="space-y-1.5">
             <Label htmlFor="pie-month">Month</Label>
@@ -149,7 +170,7 @@ export function PieChartView() {
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="border-b border-border/70">
           <CardTitle className="text-base">Spending by Category</CardTitle>
           <CardDescription>
             {MONTH_OPTIONS[appliedFilters.month - 1].label} {appliedFilters.year} &middot; converted to{' '}
@@ -158,14 +179,16 @@ export function PieChartView() {
         </CardHeader>
         <CardContent>
           {categoryData.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border py-16 text-center text-muted-foreground">
-              <PieChartIcon className="h-8 w-8" strokeWidth={1.5} />
+            <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-secondary/25 py-16 text-center text-muted-foreground">
+              <div className="mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
+                <PieChartIcon className="h-5 w-5" strokeWidth={1.5} />
+              </div>
               <p className="text-sm font-medium">No expenses recorded for this period.</p>
               <p className="text-xs">Add a cost to see the category breakdown.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <div className="h-80 w-full">
+              <div className="relative h-80 w-full" role="img" aria-label="Spending distribution by category">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
@@ -176,9 +199,9 @@ export function PieChartView() {
                       cy="50%"
                       innerRadius={0}
                       outerRadius={110}
-                      paddingAngle={2}
+                      paddingAngle={3}
                       isAnimationActive
-                      animationDuration={400}
+                      animationDuration={350}
                       label={({ category, percent }) => `${category} ${(percent * 100).toFixed(0)}%`}
                     >
                       {categoryData.map((entry, index) => (
@@ -189,11 +212,20 @@ export function PieChartView() {
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(value) => formatCurrency(value, appliedFilters.currency)}
+                      content={<ChartTooltip currency={appliedFilters.currency} />}
+                      cursor={false}
                     />
-                    <Legend />
+                    <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
                   </PieChart>
                 </ResponsiveContainer>
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pb-8">
+                  <span className="text-xl font-semibold tracking-tight text-foreground">
+                    {formatCurrency(totalValue, appliedFilters.currency)}
+                  </span>
+                  <span className="mt-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                    Total
+                  </span>
+                </div>
               </div>
 
               {/* Text-based breakdown, also serving as an accessible
@@ -202,7 +234,7 @@ export function PieChartView() {
                 {categoryData.map((entry, index) => (
                   <li
                     key={entry.category}
-                    className="flex items-center justify-between rounded-md border border-border px-3 py-2 text-sm"
+                    className="flex items-center justify-between rounded-lg border border-border/70 bg-background/50 px-3 py-3 text-sm"
                   >
                     <span className="flex items-center gap-2 font-medium text-foreground">
                       <span
@@ -228,4 +260,3 @@ export function PieChartView() {
     </PageContainer>
   )
 }
-

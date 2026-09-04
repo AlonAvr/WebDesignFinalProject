@@ -5,22 +5,22 @@ import { motion } from 'motion/react'
 export function PageContainer({ eyebrow, title, description, children }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="mx-auto w-full max-w-6xl px-8 py-8"
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className="mx-auto w-full max-w-7xl px-5 py-7 sm:px-8 lg:py-9"
     >
-      <div className="mb-8">
+      <div className="mb-8 border-b border-border/70 pb-7">
         {eyebrow && (
-          <p className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-accent">
+          <p className="mb-2 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-accent">
             {eyebrow}
           </p>
         )}
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-3xl font-semibold tracking-[-0.025em] text-foreground">
           {title}
         </h1>
         {description && (
-          <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
             {description}
           </p>
         )}

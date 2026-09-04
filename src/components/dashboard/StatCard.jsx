@@ -14,17 +14,17 @@ export function StatCard({ label, value, icon: Icon, trend, trendDirection = 'ne
     <motion.div
       whileHover={{ y: -2 }}
       transition={{ duration: 0.15 }}
-      className="rounded-lg border border-border bg-card p-5 shadow-sm"
+      className="rounded-xl border border-border/80 bg-card p-5 shadow-[0_8px_30px_-18px_hsl(var(--foreground)/0.35)]"
     >
       <div className="flex items-start justify-between">
-        <p className="text-sm font-medium text-muted-foreground">{label}</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</p>
         {Icon && (
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/10">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/10">
             <Icon className="h-4 w-4 text-accent" strokeWidth={2} />
           </div>
         )}
       </div>
-      <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
+      <p className="mt-4 text-2xl font-semibold tracking-[-0.025em] text-foreground">
         {value}
       </p>
       {trend && (

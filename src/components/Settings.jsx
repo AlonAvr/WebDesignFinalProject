@@ -74,10 +74,10 @@ export function Settings() {
       title="Settings"
       description="Manage exchange rate sources and application preferences."
     >
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(18rem,0.9fr)]">
         <Card>
-          <CardHeader>
-            <CardTitle>Exchange Rate Source</CardTitle>
+          <CardHeader className="border-b border-border/70 bg-secondary/30">
+            <CardTitle className="text-lg">Exchange Rate Source</CardTitle>
             <CardDescription>
               Set the URL used to fetch currency exchange rates. Leave empty to use the
               bundled default (/rates.json).
@@ -92,12 +92,13 @@ export function Settings() {
                 value={ratesUrl}
                 onChange={(e) => setRatesUrl(e.target.value)}
               />
-              <p className="text-xs text-muted-foreground">
-                Current: <span className="font-medium text-foreground">{savedUrl || '(default) /rates.json'}</span>
+              <p className="text-xs leading-5 text-muted-foreground">
+                Current:{' '}
+                <span className="font-medium text-foreground">{savedUrl || '(default) /rates.json'}</span>
               </p>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <Button onClick={handleSaveUrl} variant="secondary" className="flex-1">
                 <Save className="h-4 w-4" />
                 Save
@@ -123,18 +124,25 @@ export function Settings() {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Current Exchange Rates</CardTitle>
-            <CardDescription>
-              Cached locally and used by every report and chart calculation.
-            </CardDescription>
+          <CardHeader className="border-b border-border/70 bg-secondary/30">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <CardTitle className="text-lg">Current Exchange Rates</CardTitle>
+                <CardDescription className="mt-1">
+                  Cached locally and used by every report and chart calculation.
+                </CardDescription>
+              </div>
+              <div className="rounded-lg bg-accent/10 p-2 text-accent">
+                <Coins className="h-4 w-4" />
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               {SUPPORTED_CURRENCIES.map((currency) => (
                 <div
                   key={currency}
-                  className="flex items-center justify-between rounded-md border border-border px-3 py-2"
+                  className="flex items-center justify-between rounded-lg border border-border/70 bg-background/60 px-3 py-3"
                 >
                   <span className="flex items-center gap-2 text-sm font-medium text-foreground">
                     <Coins className="h-4 w-4 text-accent" />
@@ -163,4 +171,3 @@ export function Settings() {
     </PageContainer>
   )
 }
-

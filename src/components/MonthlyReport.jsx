@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -74,6 +75,13 @@ export function MonthlyReport() {
       description="Review all recorded costs for the selected month."
     >
       <Card className="mb-6">
+        <CardHeader className="flex-row items-center justify-between border-b border-border/70 bg-secondary/30">
+          <div>
+            <CardTitle className="text-base">Report filters</CardTitle>
+            <p className="mt-1 text-xs text-muted-foreground">Choose a period and display currency.</p>
+          </div>
+          <Badge variant="outline">Live data</Badge>
+        </CardHeader>
         <CardContent className="flex flex-wrap items-end gap-4 pt-6">
           <div className="space-y-1.5">
             <Label htmlFor="report-month">Month</Label>
@@ -154,20 +162,25 @@ export function MonthlyReport() {
       </div>
 
       <Card>
-        <CardHeader>
+        <CardHeader className="border-b border-border/70">
           <CardTitle className="text-base">
             Cost Entries &middot; {MONTH_OPTIONS[appliedFilters.month - 1].label} {appliedFilters.year}
           </CardTitle>
         </CardHeader>
         <CardContent>
           {report.costs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border py-12 text-center text-muted-foreground">
-              <Receipt className="h-8 w-8" strokeWidth={1.5} />
+            <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-secondary/25 py-14 text-center text-muted-foreground">
+              <div className="mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
+                <Receipt className="h-5 w-5" strokeWidth={1.6} />
+              </div>
               <p className="text-sm font-medium">No expenses recorded for this period.</p>
               <p className="text-xs">Try a different month, year, or add a new cost.</p>
             </div>
           ) : (
-            <Table>
+            <Table aria-label={`Cost entries for ${MONTH_OPTIONS[appliedFilters.month - 1].label} ${appliedFilters.year}`}>
+              <caption className="sr-only">
+                Cost entries for {MONTH_OPTIONS[appliedFilters.month - 1].label} {appliedFilters.year}
+              </caption>
               <TableHeader>
                 <TableRow>
                   <TableHead>Day</TableHead>
@@ -187,7 +200,11 @@ export function MonthlyReport() {
                     <TableCell>{cost.description}</TableCell>
                     <TableCell>{cost.category}</TableCell>
                     <TableCell className="text-right">{cost.sum}</TableCell>
-                    <TableCell>{cost.currency}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="font-mono text-[0.68rem]">
+                        {cost.currency}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="text-right font-medium">
                       {formatCurrency(
                         convertCurrency(cost.sum, cost.currency, report.total.currency),
@@ -204,4 +221,3 @@ export function MonthlyReport() {
     </PageContainer>
   )
 }
-

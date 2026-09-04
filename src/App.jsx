@@ -37,7 +37,7 @@ function App() {
         <AppSidebar activeSection={activeSection} onNavigate={setActiveSection} />
         <div className="flex min-w-0 flex-1 flex-col">
           <AppHeader />
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto" tabIndex="-1">
             <ActivePage />
           </main>
         </div>

@@ -46,6 +46,50 @@
 
     --radius: 0.75rem;
   }
+
+  .dark {
+    --background: 222 25% 10%;
+    --foreground: 210 20% 96%;
+
+    --card: 222 24% 14%;
+    --card-foreground: 210 20% 96%;
+
+    --popover: 222 24% 15%;
+    --popover-foreground: 210 20% 96%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+
+    --secondary: 222 20% 19%;
+    --secondary-foreground: 210 20% 92%;
+
+    --muted: 222 20% 18%;
+    --muted-foreground: 220 13% 70%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 222 47% 11%;
+
+    --success: 152 58% 48%;
+    --success-foreground: 222 47% 11%;
+
+    --warning: 38 92% 55%;
+    --warning-foreground: 222 47% 11%;
+
+    --destructive: 0 72% 58%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 16% 25%;
+    --input: 222 16% 30%;
+    --ring: 217 91% 60%;
+
+    --sidebar: 222 35% 8%;
+    --sidebar-foreground: 220 15% 88%;
+    --sidebar-muted: 220 12% 67%;
+    --sidebar-border: 222 25% 17%;
+    --sidebar-active: 217 91% 64%;
+
+    --radius: 0.75rem;
+  }
 }
 
 @layer base {
@@ -55,12 +99,29 @@
 
   html {
     @apply scroll-smooth;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: 'cv11', 'ss01';
     min-width: 320px;
+    transition: background-color 180ms ease, color 180ms ease;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html.theme-transition,
+    html.theme-transition *,
+    html.theme-transition *::before,
+    html.theme-transition *::after {
+      transition-property: background-color, border-color, color, fill, stroke;
+      transition-duration: 180ms;
+      transition-timing-function: ease;
+    }
   }
 
   button,
@@ -76,6 +137,10 @@
   :focus-visible {
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
+  }
+
+  .recharts-pie-label-text {
+    fill: hsl(var(--foreground));
   }
 
   @media (prefers-reduced-motion: reduce) {

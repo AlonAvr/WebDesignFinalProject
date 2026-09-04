@@ -203,6 +203,7 @@ export function PieChartView() {
                       isAnimationActive
                       animationDuration={350}
                       label={({ category, percent }) => `${category} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={{ stroke: 'hsl(var(--muted-foreground))' }}
                     >
                       {categoryData.map((entry, index) => (
                         <Cell
@@ -215,7 +216,11 @@ export function PieChartView() {
                       content={<ChartTooltip currency={appliedFilters.currency} />}
                       cursor={false}
                     />
-                    <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                    <Legend
+                      iconType="circle"
+                      wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
+                      formatter={(value) => <span className="text-foreground">{value}</span>}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pb-8">

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import { NAV_ITEMS, APP_NAME } from '@/utils/constants'
 import { cn } from '@/lib/utils'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 
 // Sidebar navigation items. "Categories" and "Year Overview" map to the
 // pie chart and bar chart views respectively.
@@ -28,8 +29,8 @@ export function AppSidebar({ activeSection, onNavigate }) {
           <Wallet className="h-[1.1rem] w-[1.1rem] text-sidebar-active" strokeWidth={2.25} />
         </div>
         <div>
-          <span className="block text-[1.05rem] font-semibold tracking-tight text-white">
-          {APP_NAME}
+          <span className="block text-[1.05rem] font-semibold tracking-tight text-sidebar-foreground">
+            {APP_NAME}
           </span>
           <span className="mt-0.5 block text-[0.68rem] font-medium uppercase tracking-[0.16em] text-sidebar-muted">
             Cost manager
@@ -55,8 +56,8 @@ export function AppSidebar({ activeSection, onNavigate }) {
               className={cn(
                 'relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150',
                 isActive
-                  ? 'bg-sidebar-active/15 text-white'
-                  : 'text-sidebar-muted hover:bg-white/5 hover:text-white'
+                  ? 'bg-sidebar-active/15 text-sidebar-foreground'
+                  : 'text-sidebar-muted hover:bg-sidebar-foreground/5 hover:text-sidebar-foreground'
               )}
             >
               {isActive && (
@@ -73,10 +74,13 @@ export function AppSidebar({ activeSection, onNavigate }) {
         })}
       </nav>
 
-      <div className="mx-3 mb-4 rounded-lg border border-sidebar-border/80 bg-white/[0.03] px-3 py-3">
-        <p className="text-[0.68rem] leading-relaxed text-sidebar-muted">
-          Keep every expense in view.
-        </p>
+      <div className="mx-3 mb-4 space-y-4">
+        <ThemeToggle />
+        <div className="rounded-lg border border-sidebar-border/80 bg-sidebar-foreground/5 px-3 py-3">
+          <p className="text-[0.68rem] leading-relaxed text-sidebar-muted">
+            Keep every expense in view.
+          </p>
+        </div>
       </div>
     </aside>
   )

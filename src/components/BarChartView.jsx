@@ -35,8 +35,6 @@ import {
 const now = new Date()
 const CURRENT_YEAR = now.getFullYear()
 
-const BAR_COLOR = '#2f6fed'
-
 function ChartTooltip({ active, payload, label, currency }) {
   if (!active || !payload?.length) return null
 
@@ -198,7 +196,7 @@ export function BarChartView() {
                 />
                 <Bar dataKey="total" radius={[6, 6, 2, 2]} isAnimationActive animationDuration={350} barSize={28}>
                   {monthlyTotals.map((entry) => (
-                    <Cell key={entry.month} fill={BAR_COLOR} />
+                    <Cell key={entry.month} fill="hsl(var(--accent))" />
                   ))}
                 </Bar>
               </BarChart>

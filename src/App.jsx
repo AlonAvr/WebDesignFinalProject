@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AppSidebar } from '@/components/layout/AppSidebar'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { AddCostForm } from '@/components/AddCostForm'
@@ -7,6 +7,7 @@ import { PieChartView } from '@/components/PieChartView'
 import { BarChartView } from '@/components/BarChartView'
 import { Settings } from '@/components/Settings'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { refreshExchangeRates } from '@/services/currencyService'
 import { NAV_ITEMS } from '@/utils/constants'
 
 // Maps each navigation item id to its corresponding page component.
@@ -20,6 +21,13 @@ const PAGES = {
 
 function App() {
   const [activeSection, setActiveSection] = useState(NAV_ITEMS.ADD_COST)
+
+  // Refresh exchange rates once on startup. Failures are handled inside
+  // the currency service (falls back to cache, then defaults) so this
+  // never blocks or breaks the rest of the application.
+  useEffect(() => {
+    refreshExchangeRates()
+  }, [])
 
   const ActivePage = PAGES[activeSection]
 

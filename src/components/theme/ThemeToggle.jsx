@@ -29,7 +29,7 @@ export function ThemeToggle() {
         >
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="border-sidebar-border bg-sidebar text-sidebar-foreground">
           {THEME_OPTIONS.map(({ value, label, icon: Icon }) => (
             <SelectItem key={value} value={value}>
               <span className="flex items-center gap-2">

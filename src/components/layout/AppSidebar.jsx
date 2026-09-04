@@ -56,7 +56,7 @@ export function AppSidebar({ activeSection, onNavigate }) {
               className={cn(
                 'relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-150',
                 isActive
-                  ? 'bg-sidebar-active/15 text-sidebar-foreground'
+                  ? 'bg-sidebar-active/10 text-sidebar-foreground [&_svg]:text-sidebar-active'
                   : 'text-sidebar-muted hover:bg-sidebar-foreground/5 hover:text-sidebar-foreground'
               )}
             >

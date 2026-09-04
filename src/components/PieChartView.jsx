@@ -29,14 +29,14 @@ const CURRENT_MONTH = now.getMonth() + 1
 // Restrained, cohesive categorical palette (reused in the same order every
 // render so colors never appear random between renders or reloads).
 const CATEGORY_COLORS = [
-  '#1d4ed8', // accent blue
-  '#0f766e', // teal
-  '#b45309', // amber
-  '#6d28d9', // violet
-  '#be123c', // rose
-  '#15803d', // green
-  '#0369a1', // sky
-  '#78716c', // stone (for "Other")
+  '#9b7ac4', // primary purple
+  '#78a083', // sage
+  '#d9a441', // warm gold
+  '#d97863', // coral
+  '#c78392', // dusty rose
+  '#619e9d', // muted teal
+  '#c7a77a', // soft sand
+  '#76599a', // deep plum
 ]
 
 function ChartTooltip({ active, payload, currency }) {

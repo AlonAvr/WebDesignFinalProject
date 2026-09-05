@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
 import { AppSidebar } from '@/components/layout/AppSidebar'
-import { AppHeader } from '@/components/layout/AppHeader'
 import { AddCostForm } from '@/components/AddCostForm'
 import { MonthlyReport } from '@/components/MonthlyReport'
 import { PieChartView } from '@/components/PieChartView'
 import { BarChartView } from '@/components/BarChartView'
 import { Settings } from '@/components/Settings'
-import { TooltipProvider } from '@/components/ui/tooltip'
 import { refreshExchangeRates } from '@/services/currencyService'
 import { NAV_ITEMS } from '@/utils/constants'
 
@@ -32,17 +30,14 @@ function App() {
   const ActivePage = PAGES[activeSection]
 
   return (
-    <TooltipProvider>
-      <div className="flex h-screen w-full overflow-hidden bg-background">
-        <AppSidebar activeSection={activeSection} onNavigate={setActiveSection} />
-        <div className="flex min-w-0 flex-1 flex-col">
-          <AppHeader />
-          <main className="flex-1 overflow-y-auto" tabIndex="-1">
-            <ActivePage />
-          </main>
-        </div>
+    <div className="flex h-screen w-full overflow-hidden bg-background">
+      <AppSidebar activeSection={activeSection} onNavigate={setActiveSection} />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <main className="flex-1 overflow-y-auto" tabIndex="-1">
+          <ActivePage />
+        </main>
       </div>
-    </TooltipProvider>
+    </div>
   )
 }
 

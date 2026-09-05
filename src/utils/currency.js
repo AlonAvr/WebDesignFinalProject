@@ -29,10 +29,8 @@ export function getCurrencySymbol(currencyCode) {
   return CURRENCY_SYMBOLS[currencyCode] || currencyCode
 }
 
-/**
- * Formats a numeric amount as a currency string using Intl.NumberFormat,
- * e.g. formatCurrency(1234.5, 'ILS') -> "₪1,234.50"
- */
+// Formats a numeric amount as a currency string using Intl.NumberFormat,
+// e.g. formatCurrency(1234.5, 'ILS') -> "₪1,234.50"
 export function formatCurrency(amount, currencyCode = 'USD') {
   const isoCode = INTL_CURRENCY_CODES[currencyCode] || currencyCode
   try {

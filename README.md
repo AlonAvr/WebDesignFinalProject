@@ -1,16 +1,48 @@
-# React + Vite
+# Costly
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Costly is a personal cost-management web application developed as the final project for the Front-End Development course.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Add expenses with amount, currency, category, and description
+- Monthly detailed reports
+- Category spending Pie Chart
+- Twelve-month Bar Chart
+- Currency conversion
+- Custom exchange-rate source
+- localStorage persistence
+- Light / Dark / System themes
 
-## React Compiler
+## Supported Currencies
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+USD
 
-## Expanding the Oxlint configuration
+ILS
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+GBP
+
+EURO
+
+## Running Locally
+
+```bash
+npm install
+npm run dev
+```
+
+## Production Build
+
+```bash
+npm run build
+```
+
+## Technologies
+
+- React
+- Vite
+- JavaScript
+- Tailwind CSS
+- Recharts
+- shadcn/ui
+- Lucide React
+- Motion

@@ -74,13 +74,8 @@ export function AppSidebar({ activeSection, onNavigate }) {
         })}
       </nav>
 
-      <div className="mx-3 mb-4 space-y-4">
+      <div className="mx-3 mb-4">
         <ThemeToggle />
-        <div className="rounded-lg border border-sidebar-border/80 bg-sidebar-foreground/5 px-3 py-3">
-          <p className="text-[0.68rem] leading-relaxed text-sidebar-muted">
-            Keep every expense in view.
-          </p>
-        </div>
       </div>
     </aside>
   )

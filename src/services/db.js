@@ -82,11 +82,9 @@ function validateMonthYear(year, month) {
   }
 }
 
-/**
- * Opens (or creates) a costs "database" identified by databaseName.
- * databaseVersion is accepted for API-compatibility but is not currently
- * used to trigger any migration logic.
- */
+// Opens (or creates) a costs "database" identified by databaseName.
+// databaseVersion is accepted for API-compatibility but is not currently
+// used to trigger any migration logic.
 export function openCostsDB(databaseName, databaseVersion) {
   if (typeof databaseName !== 'string' || databaseName.trim() === '') {
     throw new Error('openCostsDB requires a non-empty "databaseName" string.')

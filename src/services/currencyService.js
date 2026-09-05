@@ -54,14 +54,12 @@ function cacheExchangeRates(rates) {
   window.localStorage.setItem(EXCHANGE_RATES_STORAGE_KEY, JSON.stringify(rates))
 }
 
-/**
- * Fetches exchange rates from the configured URL (or the default
- * public/rates.json), validates them, and caches them on success.
- *
- * On failure, falls back to any existing cached rates, and finally to the
- * built-in default rates, so the app never becomes unusable if the rates
- * server is unreachable. Returns { rates, source, error }.
- */
+// Fetches exchange rates from the configured URL (or the default
+// public/rates.json), validates them, and caches them on success.
+//
+// On failure, falls back to any existing cached rates, and finally to the
+// built-in default rates, so the app never becomes unusable if the rates
+// server is unreachable. Returns { rates, source, error }.
 export async function refreshExchangeRates() {
   const url = resolveRatesUrl()
 
@@ -88,4 +86,3 @@ export async function getExchangeRates() {
   const { rates } = await refreshExchangeRates()
   return rates
 }
-

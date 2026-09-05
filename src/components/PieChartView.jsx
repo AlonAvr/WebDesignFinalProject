@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { PieChart as PieChartIcon, FileSearch } from 'lucide-react'
 import { PageContainer } from '@/components/layout/PageContainer'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -188,48 +188,43 @@ export function PieChartView() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <div className="relative h-80 w-full" role="img" aria-label="Spending distribution by category">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={categoryData}
-                      dataKey="value"
-                      nameKey="category"
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={0}
-                      outerRadius={110}
-                      paddingAngle={3}
-                      isAnimationActive
-                      animationDuration={350}
-                      label={({ category, percent }) => `${category} ${(percent * 100).toFixed(0)}%`}
-                      labelLine={{ stroke: 'hsl(var(--muted-foreground))' }}
-                    >
-                      {categoryData.map((entry, index) => (
-                        <Cell
-                          key={entry.category}
-                          fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      content={<ChartTooltip currency={appliedFilters.currency} />}
-                      cursor={false}
-                    />
-                    <Legend
-                      iconType="circle"
-                      wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
-                      formatter={(value) => <span className="text-foreground">{value}</span>}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pb-8">
-                  <span className="text-xl font-semibold tracking-tight text-foreground">
+              <div className="w-full" role="img" aria-label="Spending distribution by category">
+                <div className="mx-auto h-72 w-full max-w-[26rem] sm:h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={categoryData}
+                        dataKey="value"
+                        nameKey="category"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={0}
+                        outerRadius="78%"
+                        paddingAngle={3}
+                        isAnimationActive
+                        animationDuration={350}
+                      >
+                        {categoryData.map((entry, index) => (
+                          <Cell
+                            key={entry.category}
+                            fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        content={<ChartTooltip currency={appliedFilters.currency} />}
+                        cursor={false}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="mt-3 text-center">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                    Total spending
+                  </p>
+                  <p className="mt-1 text-xl font-semibold tracking-tight text-foreground">
                     {formatCurrency(totalValue, appliedFilters.currency)}
-                  </span>
-                  <span className="mt-1 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                    Total
-                  </span>
+                  </p>
                 </div>
               </div>
 

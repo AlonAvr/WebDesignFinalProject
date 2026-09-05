@@ -124,7 +124,7 @@ export function Settings() {
         </Card>
 
         <Card>
-          <CardHeader className="border-b border-border/70 bg-secondary/30">
+          <CardHeader className="border-b border-border/70 bg-secondary/30 p-4">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <CardTitle className="text-lg">Current Exchange Rates</CardTitle>
@@ -137,12 +137,12 @@ export function Settings() {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
+          <CardContent className="space-y-3 p-4 pt-0">
+            <div className="space-y-1">
               {SUPPORTED_CURRENCIES.map((currency) => (
                 <div
                   key={currency}
-                  className="flex items-center justify-between rounded-lg border border-border/70 bg-background/60 px-3 py-3"
+                  className="flex items-center justify-between rounded-lg border border-border/70 bg-background/60 px-3 py-2"
                 >
                   <span className="flex items-center gap-2 text-sm font-medium text-foreground">
                     <Coins className="h-4 w-4 text-accent" />

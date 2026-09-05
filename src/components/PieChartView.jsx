@@ -1,48 +1,54 @@
-import { useMemo, useState } from 'react'
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
-import { PieChart as PieChartIcon, FileSearch } from 'lucide-react'
-import { PageContainer } from '@/components/layout/PageContainer'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { useMemo, useState } from "react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { PieChart as PieChartIcon, FileSearch } from "lucide-react";
+import { PageContainer } from "@/components/layout/PageContainer";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { openCostsDB } from '@/services/db'
-import { convertCurrency, formatCurrency } from '@/utils/currency'
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { openCostsDB } from "@/services/db";
+import { convertCurrency, formatCurrency } from "@/utils/currency";
 import {
   SUPPORTED_CURRENCIES,
   MONTH_OPTIONS,
   YEAR_OPTIONS,
   DATABASE_NAME,
   DATABASE_VERSION,
-} from '@/utils/constants'
+} from "@/utils/constants";
 
-const now = new Date()
-const CURRENT_YEAR = now.getFullYear()
-const CURRENT_MONTH = now.getMonth() + 1
+const now = new Date();
+const CURRENT_YEAR = now.getFullYear();
+const CURRENT_MONTH = now.getMonth() + 1;
 
 // Restrained, cohesive categorical palette (reused in the same order every
 // render so colors never appear random between renders or reloads).
 const CATEGORY_COLORS = [
-  '#9b7ac4', // primary purple
-  '#78a083', // sage
-  '#d9a441', // warm gold
-  '#d97863', // coral
-  '#c78392', // dusty rose
-  '#619e9d', // muted teal
-  '#c7a77a', // soft sand
-  '#76599a', // deep plum
-]
+  "#9b7ac4", // primary purple
+  "#78a083", // sage
+  "#d9a441", // warm gold
+  "#d97863", // coral
+  "#c78392", // dusty rose
+  "#619e9d", // muted teal
+  "#c7a77a", // soft sand
+  "#76599a", // deep plum
+];
 
 function ChartTooltip({ active, payload, currency }) {
-  if (!active || !payload?.length) return null
+  if (!active || !payload?.length) return null;
 
-  const item = payload[0]
+  const item = payload[0];
   return (
     <div className="rounded-lg border border-border/80 bg-card px-3 py-2 shadow-lg">
       <p className="text-xs font-semibold text-foreground">{item.name}</p>
@@ -50,44 +56,62 @@ function ChartTooltip({ active, payload, currency }) {
         {formatCurrency(item.value, currency)}
       </p>
     </div>
-  )
+  );
 }
 
 // "Categories" page: aggregates costs by category for the selected
 // month/year, converting every cost into the selected currency first.
 export function PieChartView() {
-  const costsDb = useMemo(() => openCostsDB(DATABASE_NAME, DATABASE_VERSION), [])
+  const costsDb = useMemo(
+    () => openCostsDB(DATABASE_NAME, DATABASE_VERSION),
+    [],
+  );
 
   const [filters, setFilters] = useState({
     month: CURRENT_MONTH,
     year: CURRENT_YEAR,
-    currency: 'USD',
-  })
-  const [appliedFilters, setAppliedFilters] = useState(filters)
+    currency: "USD",
+  });
+  const [appliedFilters, setAppliedFilters] = useState(filters);
 
   const report = useMemo(
-    () => costsDb.getReport(appliedFilters.currency, appliedFilters.year, appliedFilters.month),
-    [costsDb, appliedFilters]
-  )
+    () =>
+      costsDb.getReport(
+        appliedFilters.currency,
+        appliedFilters.year,
+        appliedFilters.month,
+      ),
+    [costsDb, appliedFilters],
+  );
 
   // Aggregate the already-converted-friendly costs by category. Each cost
   // is converted individually (mirroring db.js's own conversion) so the
   // category breakdown sums to the same total shown in the report.
   const categoryData = useMemo(() => {
-    const totalsByCategory = new Map()
+    const totalsByCategory = new Map();
     for (const cost of report.costs) {
-      const converted = convertCurrency(cost.sum, cost.currency, report.total.currency)
-      totalsByCategory.set(cost.category, (totalsByCategory.get(cost.category) || 0) + converted)
+      const converted = convertCurrency(
+        cost.sum,
+        cost.currency,
+        report.total.currency,
+      );
+      totalsByCategory.set(
+        cost.category,
+        (totalsByCategory.get(cost.category) || 0) + converted,
+      );
     }
     return Array.from(totalsByCategory.entries())
-      .map(([category, value]) => ({ category, value: Math.round((value + Number.EPSILON) * 100) / 100 }))
-      .sort((a, b) => b.value - a.value)
-  }, [report])
+      .map(([category, value]) => ({
+        category,
+        value: Math.round((value + Number.EPSILON) * 100) / 100,
+      }))
+      .sort((a, b) => b.value - a.value);
+  }, [report]);
 
-  const totalValue = categoryData.reduce((sum, item) => sum + item.value, 0)
+  const totalValue = categoryData.reduce((sum, item) => sum + item.value, 0);
 
   function handleGenerate() {
-    setAppliedFilters(filters)
+    setAppliedFilters(filters);
   }
 
   return (
@@ -100,16 +124,22 @@ export function PieChartView() {
         <CardHeader className="flex-row items-center justify-between border-b border-border/70 bg-secondary/30">
           <div>
             <CardTitle className="text-base">Chart filters</CardTitle>
-            <p className="mt-1 text-xs text-muted-foreground">See the category mix for a selected period.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              See the category mix for a selected period.
+            </p>
           </div>
-          <span className="hidden text-xs font-medium text-muted-foreground sm:block">Category mix</span>
+          <span className="hidden text-xs font-medium text-muted-foreground sm:block">
+            Category mix
+          </span>
         </CardHeader>
         <CardContent className="flex flex-wrap items-end gap-4 pt-6">
           <div className="space-y-1.5">
             <Label htmlFor="pie-month">Month</Label>
             <Select
               value={String(filters.month)}
-              onValueChange={(value) => setFilters((f) => ({ ...f, month: Number(value) }))}
+              onValueChange={(value) =>
+                setFilters((f) => ({ ...f, month: Number(value) }))
+              }
             >
               <SelectTrigger id="pie-month" className="w-36">
                 <SelectValue />
@@ -128,7 +158,9 @@ export function PieChartView() {
             <Label htmlFor="pie-year">Year</Label>
             <Select
               value={String(filters.year)}
-              onValueChange={(value) => setFilters((f) => ({ ...f, year: Number(value) }))}
+              onValueChange={(value) =>
+                setFilters((f) => ({ ...f, year: Number(value) }))
+              }
             >
               <SelectTrigger id="pie-year" className="w-28">
                 <SelectValue />
@@ -147,7 +179,9 @@ export function PieChartView() {
             <Label htmlFor="pie-currency">Currency</Label>
             <Select
               value={filters.currency}
-              onValueChange={(value) => setFilters((f) => ({ ...f, currency: value }))}
+              onValueChange={(value) =>
+                setFilters((f) => ({ ...f, currency: value }))
+              }
             >
               <SelectTrigger id="pie-currency" className="w-28">
                 <SelectValue />
@@ -173,7 +207,8 @@ export function PieChartView() {
         <CardHeader className="border-b border-border/70">
           <CardTitle className="text-base">Spending by Category</CardTitle>
           <CardDescription>
-            {MONTH_OPTIONS[appliedFilters.month - 1].label} {appliedFilters.year} &middot; converted to{' '}
+            {MONTH_OPTIONS[appliedFilters.month - 1].label}{" "}
+            {appliedFilters.year} &middot; converted to{" "}
             {appliedFilters.currency}
           </CardDescription>
         </CardHeader>
@@ -183,12 +218,20 @@ export function PieChartView() {
               <div className="mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
                 <PieChartIcon className="h-5 w-5" strokeWidth={1.5} />
               </div>
-              <p className="text-sm font-medium">No expenses recorded for this period.</p>
-              <p className="text-xs">Add a cost to see the category breakdown.</p>
+              <p className="text-sm font-medium">
+                No expenses recorded for this period.
+              </p>
+              <p className="text-xs">
+                Add a cost to see the category breakdown.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <div className="w-full" role="img" aria-label="Spending distribution by category">
+              <div
+                className="w-full"
+                role="img"
+                aria-label="Spending distribution by category"
+              >
                 <div className="mx-auto h-72 w-full max-w-[26rem] sm:h-80">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -199,20 +242,26 @@ export function PieChartView() {
                         cx="50%"
                         cy="50%"
                         innerRadius={0}
-                        outerRadius="78%"
-                        paddingAngle={3}
+                        outerRadius="70%"
+                        paddingAngle={0}
+                        stroke="hsl(var(--background))"
+                        strokeWidth={2}
                         isAnimationActive
                         animationDuration={350}
                       >
                         {categoryData.map((entry, index) => (
                           <Cell
                             key={entry.category}
-                            fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]}
+                            fill={
+                              CATEGORY_COLORS[index % CATEGORY_COLORS.length]
+                            }
                           />
                         ))}
                       </Pie>
                       <Tooltip
-                        content={<ChartTooltip currency={appliedFilters.currency} />}
+                        content={
+                          <ChartTooltip currency={appliedFilters.currency} />
+                        }
                         cursor={false}
                       />
                     </PieChart>
@@ -230,7 +279,10 @@ export function PieChartView() {
 
               {/* Text-based breakdown, also serving as an accessible
                   alternative to the chart for the same information. */}
-              <ul className="space-y-2 self-center" aria-label="Category breakdown">
+              <ul
+                className="space-y-2 self-center"
+                aria-label="Category breakdown"
+              >
                 {categoryData.map((entry, index) => (
                   <li
                     key={entry.category}
@@ -239,13 +291,21 @@ export function PieChartView() {
                     <span className="flex items-center gap-2 font-medium text-foreground">
                       <span
                         className="h-2.5 w-2.5 rounded-full"
-                        style={{ backgroundColor: CATEGORY_COLORS[index % CATEGORY_COLORS.length] }}
+                        style={{
+                          backgroundColor:
+                            CATEGORY_COLORS[index % CATEGORY_COLORS.length],
+                        }}
                         aria-hidden="true"
                       />
                       {entry.category}
                     </span>
                     <span className="flex items-center gap-3 text-muted-foreground">
-                      <span>{totalValue > 0 ? ((entry.value / totalValue) * 100).toFixed(1) : '0.0'}%</span>
+                      <span>
+                        {totalValue > 0
+                          ? ((entry.value / totalValue) * 100).toFixed(1)
+                          : "0.0"}
+                        %
+                      </span>
                       <span className="font-medium text-foreground">
                         {formatCurrency(entry.value, appliedFilters.currency)}
                       </span>
@@ -258,5 +318,5 @@ export function PieChartView() {
         </CardContent>
       </Card>
     </PageContainer>
-  )
+  );
 }
